@@ -4,10 +4,118 @@
 <meta charset="utf-8">
 <title>Chatbox Generator</title>
 <link rel="shortcut icon" type="image/x-icon" href="images/ppados.ico">
+<style type="text/css">
+    #cbin {
+        width: 512px;
+        height: 256px;
+    }
+
+    #cbout {
+        width: 512px;
+        height: 256px;
+    }
+</style>
 </head>
 <body>
 <script>
-    document.write("初学JavaScript");
+    var six= [
+			"~"
+	];
+	var five= [
+			"f","k"
+            ];
+	var four= [
+			"I","t","\""," ","(",")"
+            ];
+	var three= [
+			"l",
+            ];
+	var two= [
+			"i",".",",","\"",":","!"
+            ];
+
+    function GetLen(c) {
+		var k = 0x80;
+        if(c.charCodeAt() / k == 0) {
+        	if(Ifin(c,six)) return 6;
+        	else if(Ifin(c,five)) return 5;
+        	else if(Ifin(c,four)) return 4;
+        	else if(Ifin(c,three)) return 3;
+        	else if(Ifin(c,two)) return 2;
+        	else return 6;
+        }
+        else return 9;	
+	}
+
+    function Ifin(x, y) {
+		var flag = false;
+		for(var i = 0;i < y.length; i++) if(x == y[i]) flag = true;
+		return flag;
+	}
+
+    function Attribute(c, i)
+	{
+		var out = "";
+		while(i <= c.length && c[i] != "%") {
+			if(c[i] == "s" && c[i + 1] == "=") {
+				var value = "";
+				i = i + 2;
+				while(i <= c.length && c[i] <= "9" && c[i] >= "0") {
+					value = value + c[i];
+					i++;
+				}
+				out = out + "Speed:" + value;
+				if(i <= c.length && c[i] != "%") out = out + ",";
+			}
+			else if(c[i] == "c" && c[i + 1] == "=") {
+				var value = "";
+				i = i + 2;
+				while(i <= c.length && (( c[i] <= "9" && c[i] >= "0" ) || ( c[i] <= "Z" && c[i] >= "A" ))) {
+					value = value + c[i];
+					i++;
+				}
+				out = out + "Color:\"{\"text\":\"\",\"color\":\"#" + value + "\"}\"";
+				if(i <= c.length && c[i] != "%") out = out + ",";
+			}
+			else i++;
+		}
+		return out;
+	}
+
+    function ChatboxCommandOutput(input) {
+        var out = "data modify storage chatbox:buffer Text set value [";
+        var chs = input.split("");
+		for( var i = 0; i < chs.length; i++)
+		{
+            var peri = "";
+			if(chs[i] == "\r") i++;
+			if(chs[i] == "\n") peri = "{Char:\"next\"}";
+			else if(chs[i] == "\"") peri = "{Char:\"" + "\\\"" + "\",Length:" + GetLen(chs[i]) + "}";
+			else if(chs[i] == "%") {
+                var extra = attri(chs,i + 1);
+				i++;
+				while(i <= chs.length && chs[i] != "%") i++;
+				i++;
+				peri = "{Char:\"" + chs[i] + "\",Length:" + GetLen(chs[i]) + "," + extra + "}";
+			}
+			else peri = "{Char:\"" + chs[i] + "\",Length:" + GetLen(chs[i]) + "}";
+			out = out + peri;
+			if(i < chs.length - 1) out = out + ",";
+			else out = out + "]";
+		}
+		return out;
+    }
 </script>
+<form name="form" id="form" method="post">
+<textarea name="ChatBoxInput" id="cbin">
+</textarea>
+</br>
+<button type="button" onclick="document.getElementById('cbout').value = ChatboxCommandOutput(document.getElementById('cbin').value)">
+    生成命令
+</button>
+</br>
+<textarea name="ChatBoxOutput" id="cbout">
+</textarea>
+</form>
 </body>
 </html>
