@@ -64,7 +64,7 @@
 					value = value + c[i];
 					i++;
 				}
-				out = out + "Speed:" + value;
+				out = out + "Delay:" + value;
 				if(i <= c.length && c[i] != "%") out = out + ",";
 			}
 			else if(c[i] == "c" && c[i + 1] == "=") {
@@ -92,7 +92,7 @@
 			if(chs[i] == "\n") peri = "{Char:\"next\"}";
 			else if(chs[i] == "\"") peri = "{Char:\"" + "\\\"" + "\",Length:" + GetLen(chs[i]) + "}";
 			else if(chs[i] == "%") {
-                var extra = attri(chs,i + 1);
+                var extra = Attribute(chs,i + 1);
 				i++;
 				while(i <= chs.length && chs[i] != "%") i++;
 				i++;
@@ -108,6 +108,11 @@
 </script>
 <form name="form" id="form" method="post">
 <textarea name="ChatBoxInput" id="cbin">
+在这里输入文本
+
+使文本带上颜色: "默认颜色为白色%c=FFAAAA%但后边的这些文本是红色的"
+使文本在固定事件后播放:"这段话说完后会暂停20个游戏刻%s=20%再播放这句话"
+两个效果同时使用："你%c=FFAAAA,s=10%好"
 </textarea>
 </br>
 <button type="button" onclick="document.getElementById('cbout').value = ChatboxCommandOutput(document.getElementById('cbin').value)">
@@ -115,6 +120,7 @@
 </button>
 </br>
 <textarea name="ChatBoxOutput" id="cbout">
+命令将在这里输出
 </textarea>
 </form>
 </body>
