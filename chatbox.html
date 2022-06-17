@@ -17,20 +17,9 @@
 </style>
 </head>
 <body>
-<script>
-    function ChatboxCommandOutput(input) {
-        var out = "data modify storage chatbox:buffer Text set value [";
-		return out;
-    }
-</script>
 <form name="form" id="form" method="post">
 <textarea name="ChatBoxInput" id="cbin">
 </textarea>
-</br>
-<button type="button" onclick="document.getElementById('cbout').value = ChatboxCommandOutput(document.getElementById('cbin').value)">
-    生成命令
-</button>
-</br>
 <textarea name="ChatBoxOutput" id="cbout">
 </textarea>
 </form>
