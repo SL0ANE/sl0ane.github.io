@@ -88,7 +88,7 @@
 		{
             var peri = "";
 			if(chs[i] == "\r") i++;
-			if(chs[i] == "\n") peri = "{Char:\"next\"}";
+			if(chs[i] == "\n") peri = "{Next:1b}";
 			else if(chs[i] == "\"") peri = "{Char:\"" + "\\\"" + "\",Length:" + GetLen(chs[i]) + "}";
 			else if(chs[i] == "%") {
                 var extra = Attribute(chs,i + 1);
