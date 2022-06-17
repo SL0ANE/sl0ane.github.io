@@ -35,8 +35,7 @@
             ];
 
     function GetLen(c) {
-		var k = 0x80;
-        if(c.charCodeAt() / k == 0) {
+        if(c.charCodeAt() < 128) {
         	if(Ifin(c,six)) return 6;
         	else if(Ifin(c,five)) return 5;
         	else if(Ifin(c,four)) return 4;
