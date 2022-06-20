@@ -35,6 +35,7 @@
             ];
 
 	var boldflag = 0;
+	var boldoffset = 0;
 
     function GetLen(c) {
 		var out = 9;
@@ -45,8 +46,10 @@
         	else if(Ifin(c,three)) out = 3;
         	else if(Ifin(c,two)) out = 2;
         	else out = 6;
+
+			out += boldflag;
         }
-        return out + boldflag;	
+        return out;	
 	}
 
     function Ifin(x, y) {
@@ -68,8 +71,14 @@
 					value = value + c[i];
 					i++;
 				}
-				if(value == "true") boldflag = 2;
-				else boldflag = -1;
+				if(value == "true") {
+					boldflag = 2;
+					boldoffset = 1;
+				}
+				else {
+					boldflag = -1;
+					boldoffset = 0;
+				}
 			}
 			else i++;
 		}
@@ -139,7 +148,8 @@
 			out = out + peri;
 			if(i < chs.length - 1) out = out + ",";
 			else out = out + "]";
-			boldflag = 0;
+
+			boldoffset = 0;
 		}
 		out += "\nscoreboard players set #chatbox.text.timer loy.value 0"
 		return out;
