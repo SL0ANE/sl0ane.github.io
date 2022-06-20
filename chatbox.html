@@ -34,16 +34,19 @@
 			"i",".",",","\"",":","!"
             ];
 
+	var boldflag = 0;
+
     function GetLen(c) {
+		var out = 9;
         if(c.charCodeAt() < 128) {
-        	if(Ifin(c,six)) return 6;
-        	else if(Ifin(c,five)) return 5;
-        	else if(Ifin(c,four)) return 4;
-        	else if(Ifin(c,three)) return 3;
-        	else if(Ifin(c,two)) return 2;
-        	else return 6;
+        	if(Ifin(c,six)) out = 6;
+        	else if(Ifin(c,five)) out = 5;
+        	else if(Ifin(c,four)) out = 4;
+        	else if(Ifin(c,three)) out = 3;
+        	else if(Ifin(c,two)) out = 2;
+        	else out = 6;
         }
-        else return 9;	
+        return out + boldflag;	
 	}
 
     function Ifin(x, y) {
@@ -55,6 +58,24 @@
     function Attribute(c, i)
 	{
 		var out = "";
+		var i_ = i;
+
+		while(i <= c.length && c[i] != "%") {
+			if(c[i] == "b" && c[i + 1] == "=") {
+				var value = "";
+				i = i + 2;
+				while(i <= c.length && c[i] != "%" && c[i] != ",") {
+					value = value + c[i];
+					i++;
+				}
+				if(value == "true") boldflag = 2;
+				else boldflag = -1;
+			}
+			else i++;
+		}
+
+		i = i_;
+
 		while(i <= c.length && c[i] != "%") {
 			if(c[i] == "s" && c[i + 1] == "=") {
 				var value = "";
@@ -73,16 +94,33 @@
 					value = value + c[i];
 					i++;
 				}
-				out = out + "Color:'{\"text\":\"\",\"color\":\"#" + value + "\"}'";
+				if(boldflag == 2){
+					out = out + "Format:'{\"text\":\"\",\"bold\":true,\"color\":\"#" + value + "\"}'";
+					boldflag = 1;
+				}
+				else if(boldflag == -1){
+					out = out + "Format:'{\"text\":\"\",\"bold\":false,\"color\":\"#" + value + "\"}'";
+					boldflag = 0;
+				}
+				else out = out + "Format:'{\"text\":\"\",\"color\":\"#" + value + "\"}'";
+
 				if(i <= c.length && c[i] != "%") out = out + ",";
 			}
 			else i++;
+		}
+		if(boldflag == 2){
+			out = out + "Format:'{\"text\":\"\",\"bold\":true}'";
+			boldflag = 1;
+		}
+		else if(boldflag == -1){
+			out = out + "Format:'{\"text\":\"\",\"bold\":false}'";
+			boldflag = 0;
 		}
 		return out;
 	}
 
     function ChatboxCommandOutput(input) {
-        var out = "data modify storage chatbox:main Buffer set value [";
+        var out = "function chatbox:bossbar/clear/with_all\ndata modify storage chatbox:main Buffer set value [";
         var chs = input.split("");
 		for( var i = 0; i < chs.length; i++)
 		{
@@ -101,6 +139,7 @@
 			out = out + peri;
 			if(i < chs.length - 1) out = out + ",";
 			else out = out + "]";
+			boldflag = 0;
 		}
 		out += "\nscoreboard players set #chatbox.text.timer loy.value 0"
 		return out;
